@@ -5,3 +5,23 @@ date: "November 24, 2018"
 output: github_document
 ---
 
+#Problem 1
+
+Create a city_state variable (e.g. “Baltimore, MD”), and a binary variable indicating whether the homicide is solved. Omit cities Dallas, TX; Phoenix, AZ; and Kansas City, MO – these don’t report victim race. Also omit Tulsa, AL – this is a data entry mistake. Modifiy victim_race to have categories white and non-white, with white as the reference category. Be sure that  victim_age is numeric.
+
+```{r}
+library(tidyverse)
+homicide_data = read_csv("./homicide-data.csv") %>% 
+  janitor::clean_names()
+```
+
+```{r}
+homicide_data %>% 
+  mutate(city_state = str_c(city, state, sep = ", "),
+         solved = as.numeric (disposition == "Closed by arrest"))
+```
+
+
+
+
+
