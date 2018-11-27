@@ -1,5 +1,5 @@
 ---
-title: "p8105_hw6_as5457"
+title: "Data Science I - Homework 6"
 author: "Sunny Siddique"
 date: "November 24, 2018"
 output: github_document
@@ -9,13 +9,19 @@ output: github_document
 
 Create a city_state variable (e.g. “Baltimore, MD”), and a binary variable indicating whether the homicide is solved. Omit cities Dallas, TX; Phoenix, AZ; and Kansas City, MO – these don’t report victim race. Also omit Tulsa, AL – this is a data entry mistake. Modifiy victim_race to have categories white and non-white, with white as the reference category. Be sure that  victim_age is numeric.
 
-```{r}
+```{r include = FALSE}
 library(tidyverse)
+```
+
+
+```{r}
+#Loading the dataset and naming it homicide_data
 homicide_data = read_csv("./homicide-data.csv") %>% 
   janitor::clean_names()
 ```
 
 ```{r}
+#Creating city_state variable, binary variable for solved cases, omitting certain cities, modifying victim race and converting victim_age as numeric.
 homicide_clean = homicide_data %>% 
   mutate(city_state = str_c(city, state, sep = ", "),
          solved = as.numeric (disposition == "Closed by arrest")) %>% 
@@ -27,6 +33,7 @@ homicide_clean = homicide_data %>%
 
 
 ```{r}
+#Confirming that victim_age was converted correctly
 class(homicide_clean$victim_age)
 ```
 
@@ -34,6 +41,7 @@ For the city of Baltimore, MD, use the glm function to fit a logistic regression
 
 
 ```{r}
+#Creating dataset and regression for "Baltimore"
 baltimore_logistic = homicide_clean %>% 
   filter(city_state == "Baltimore, MD") %>% 
   glm(solved ~ victim_age + victim_sex + victim_race, data = ., family = binomial())
@@ -41,18 +49,20 @@ baltimore_logistic
 ```
 
 ```{r}
+#Computing confidence intervals
 baltimore_logistic %>% 
   broom::tidy() %>% 
   mutate(OR = exp(estimate),
          lower_bound = exp(estimate - std.error*1.96), upper_bound = exp(estimate + std.error*1.96))
 ```
 
-The odds of a non-white person's case being solved is 0.441 times the odds of a white person's case being solved. We are 95% confident that the true odds ratio falls between 0.313 and 0.620.
+*The odds of a non-white person's case being solved is 0.441 times the odds of a white person's case being solved. We are 95% confident that the true odds ratio falls between 0.313 and 0.620.*
 
 Now run glm for each of the cities in your dataset, and extract the adjusted odds ratio (and CI) for solving homicides comparing non-white victims to white victims. Do this within a “tidy” pipeline, making use of purrr::map, list columns, and unnest as necessary to create a dataframe with estimated ORs and CIs for each city.
 
 
 ```{r}
+#GLM for all cities
 all_cities = homicide_clean %>% 
   group_by(city_state) %>% 
   nest() %>% 
@@ -65,7 +75,6 @@ all_cities = homicide_clean %>%
          conf_low = exp(estimate - std.error*1.96),
          conf_high = exp(estimate + std.error*1.96)) %>%
   select(city_state, term, log_OR = estimate, OR, conf_low, conf_high, p.value)
-all_cities
 ```
 
 
@@ -84,24 +93,27 @@ all_cities %>%
   )
 ```
 
-#COMMENT
+*It appears that in cities like Boston, Omaha, Oakland, Pittsburgh etc. the odds of having the case resolved for a non-white person is statistially significantly lower compared to a white person. For cities on the other end, such as Tampa, Birmingham, Durham the estimate suggests that there is not much disparity in the odds of having the case resolved between a non-white and white person; however, these estimates are not statistically significant at the 5% level of significance, because their 95% confidence interval error bars include the null value of 1.*
 
-##Problem 2
+#Problem 2
 
 Load and clean the data for regression analysis (i.e. convert numeric to factor where appropriate, check for missing data, etc.).
 
 ```{r}
+#Loading the dataset
 birthweight = read_csv("./birthweight.csv") %>% 
   janitor::clean_names()
 ```
 
 ```{r}
+#Checking the class of all variables to identify which ones need to be converted
 sapply(birthweight, class)
 ```
 
-Need to convert babysex, malform, frace, mrace from numeric to factor
+*Need to convert babysex, malform, frace, mrace from numeric to factor.*
 
 ```{r}
+#Mutating select variables
 birthweight = birthweight %>% 
   mutate(babysex = as.factor(babysex), 
          malform = as.factor (malform),
@@ -109,13 +121,12 @@ birthweight = birthweight %>%
          mrace = as.factor(mrace))
 ```
 
-Looking for missing values 
-
 ```{r}
+#Looking for missing values 
 sapply(birthweight, function(x) sum(is.na(x)))
 ```
 
-No missing values in the dataset. 
+*No missing values in the dataset.*
 
 Propose a regression model for birthweight. This model may be based on a hypothesized structure for the factors that underly birthweight, on a data-driven model-building process, or a combination of the two. Describe your modeling process and show a plot of model residuals against fitted values – use add_predictions and add_residuals in making this plot.
 
