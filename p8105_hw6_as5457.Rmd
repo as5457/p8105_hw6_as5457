@@ -191,6 +191,16 @@ birthweight_model = birthweight %>%
 birthweight %>% 
   modelr::add_predictions(birthweight_model)%>%
   modelr::add_residuals(birthweight_model) %>% 
-  ggplot(aes(x=pred, y = resid)) + geom_point()
+  ggplot(aes(x=pred, y = resid)) + geom_point() +
+  labs (
+    title = "Residuals Using Backward Selection Method",
+        x = "Predictions",
+        y = "Residuals"
+  )
 ```
 
+Compare your model to two others:
+
+One using length at birth and gestational age as predictors (main effects only)
+One using head circumference, length, sex, and all interactions (including the three-way interaction) between these
+Make this comparison in terms of the cross-validated prediction error; use crossv_mc and functions in purrr as appropriate.
