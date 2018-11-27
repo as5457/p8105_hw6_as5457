@@ -57,7 +57,15 @@ all_cities = homicide_clean %>%
   group_by(city_state) %>% 
   nest() %>% 
   mutate(cities = map(data, ~glm(solved ~ victim_age + victim_sex + victim_race, data = .x, family = binomial())),
-    cities = map(cities, broom::tidy))
+    cities = map(cities, broom::tidy)) %>% 
+   select(-data) %>% 
+  unnest() %>% 
+  filter(term == "victim_racenon-white") %>% 
+  mutate(OR = exp(estimate),
+         lower_bound = exp(estimate - std.error*1.96),
+         upper_bound = exp(estimate + std.error*1.96)) %>%
+  select(city_state, term, log_OR = estimate, OR, lower_bound, upper_bound, p.value)
+all_cities 
 ```
 
 
