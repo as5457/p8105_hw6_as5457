@@ -14,7 +14,7 @@ library(tidyverse)
 ```
 
 
-```{r}
+```{r message = FALSE}
 #Loading the dataset and naming it homicide_data
 homicide_data = read_csv("./homicide-data.csv") %>% 
   janitor::clean_names()
@@ -99,7 +99,7 @@ all_cities %>%
 
 Load and clean the data for regression analysis (i.e. convert numeric to factor where appropriate, check for missing data, etc.).
 
-```{r}
+```{r messsage = FALSE}
 #Loading the dataset
 birthweight = read_csv("./birthweight.csv") %>% 
   janitor::clean_names()
