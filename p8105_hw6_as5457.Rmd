@@ -231,8 +231,21 @@ cross_result = cross_valid %>%  #model 1 is my model
                         ~lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace +parity + pnumlbw + pnumsga + ppbmi + smoken, data = .x)),
          model2 = map(train, ~lm(bwt ~ blength + gaweeks, data = .x)),
          model3 = map(train, ~lm(bwt ~ bhead * blength * babysex, data = .x))) %>% 
-  mutate(model1_rmse = map2_dbl(model1, test, ~rmse(model = .x, data = .y)),
-         model2_rmse = map2_dbl(model2, test, ~rmse(model = .x, data = .y)),
-         model3_rmse = map2_dbl(model3, test, ~rmse(model = .x, data = .y)))
+  mutate(rmse_model1 = map2_dbl(model1, test, ~rmse(model = .x, data = .y)),
+         rmse_model2 = map2_dbl(model2, test, ~rmse(model = .x, data = .y)),
+         rmse_model3 = map2_dbl(model3, test, ~rmse(model = .x, data = .y)))
 ```
+
+
+```{r}
+cross_result %>% 
+  dplyr::select(.id, starts_with("rmse")) %>% 
+  gather(key = model, value = rmse, rmse_model1:rmse_model3) %>% 
+  ggplot(aes(x = model, y = rmse)) + geom_violin()
+```
+
+
+
+
+
 
