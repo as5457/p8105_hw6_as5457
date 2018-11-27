@@ -20,7 +20,7 @@ homicide_data = read_csv("./homicide-data.csv") %>%
   janitor::clean_names()
 ```
 
-```{r}
+```{r warning = FALSE}
 #Creating city_state variable, binary variable for solved cases, omitting certain cities, modifying victim race and converting victim_age as numeric.
 homicide_clean = homicide_data %>% 
   mutate(city_state = str_c(city, state, sep = ", "),
@@ -191,7 +191,7 @@ Describe your modeling process and show a plot of model residuals against fitted
 
 *I used backward selection to choose my model. I began with all variables included in the model. I then started to eliminate, one-by-one, variables that produced a p-value of >0.05. The final model that I choose is: birthweight = b0 + b1(babysex) + b2(bhead) + b3(blength) + b4(delwt) + b5(gaweeks) + b6(mrace) + b7(parity) + b8(pnumlbw) + b9(pnumsga) + b10(ppbmi) + b11(smoken). In this model, each parameter estimate produced a p-value of <0.05 which means that each estimate is statistically significant at the 5% level of significance.*
 
-```{r}
+```{r warning = FALSE}
 #My model is called birthweight_model
 birthweight_model = birthweight %>% 
   lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace +parity + pnumlbw + pnumsga +ppbmi + smoken, data = .)
