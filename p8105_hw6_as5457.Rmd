@@ -243,6 +243,7 @@ cross_result %>%
   ggplot(aes(x = model, y = rmse)) + geom_violin()
 ```
 
+*According to the plot above, it appears that my model, model1 has a lower rmse compared to the two proposed models in the prompt. The second model containing the variables blength and gaweeks appears to have the highest rmse and therefore would be the least ideal model for answer the research question.*
 
 
 
