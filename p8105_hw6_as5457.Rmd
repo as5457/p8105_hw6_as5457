@@ -125,3 +125,60 @@ Exploring the relationship between birthweight and mother's weight at delivery.
 ggplot(birthweight, aes(babysex, delwt)) + geom_boxplot()
 ```
 
+Backward selection
+
+```{r}
+birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + fincome + frace + gaweeks + malform + menarche + mheight + mrace + momage +parity + pnumlbw + pnumsga +ppbmi + ppwt + smoken + wtgain, data = .) %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 3)
+#Eliminate frace because p>0.05 for all levels
+
+birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + fincome + gaweeks + malform + menarche + mheight + mrace + momage +parity + pnumlbw + pnumsga +ppbmi + ppwt + smoken + wtgain, data = .) %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 3)
+#Eliminate fincome because p>0.05
+
+birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + malform + menarche + mheight + mrace + momage +parity + pnumlbw + pnumsga +ppbmi + ppwt + smoken + wtgain, data = .) %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 3)
+#Eliminate malform1 because p>0.05
+
+birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + menarche + mheight + mrace + momage +parity + pnumlbw + pnumsga +ppbmi + ppwt + smoken + wtgain, data = .) %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 3)
+#Eliminate menarche because p>0.05
+
+birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mheight + mrace + momage +parity + pnumlbw + pnumsga +ppbmi + ppwt + smoken + wtgain, data = .) %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 3)
+#Eliminate mheight because p>0.05
+
+birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace + momage +parity + pnumlbw + pnumsga +ppbmi + ppwt + smoken + wtgain, data = .) %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 3)
+#Eliminate momage because p>0.05
+
+birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace +parity + pnumlbw + pnumsga +ppbmi + ppwt + smoken + wtgain, data = .) %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 3)
+#Eliminate ppwt because p>0.05
+
+birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace +parity + pnumlbw + pnumsga +ppbmi + smoken + wtgain, data = .) %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 3)
+#Eliminate wtgain because p>0.05
+
+birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace +parity + pnumlbw + pnumsga +ppbmi + smoken, data = .) %>% 
+  broom::tidy() %>% 
+  knitr::kable(digits = 3)
+```
+
