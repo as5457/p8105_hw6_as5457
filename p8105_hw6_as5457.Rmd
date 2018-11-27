@@ -130,15 +130,9 @@ sapply(birthweight, function(x) sum(is.na(x)))
 
 Propose a regression model for birthweight. This model may be based on a hypothesized structure for the factors that underly birthweight, on a data-driven model-building process, or a combination of the two. Describe your modeling process and show a plot of model residuals against fitted values – use add_predictions and add_residuals in making this plot.
 
-
-Exploring the relationship between birthweight and mother's weight at delivery.
-```{r}
-ggplot(birthweight, aes(babysex, delwt)) + geom_boxplot()
-```
-
 Backward selection
 
-```{r}
+```{r eval = FALSE}
 birthweight %>% 
   lm(bwt ~ babysex + bhead + blength + delwt + fincome + frace + gaweeks + malform + menarche + mheight + mrace + momage +parity + pnumlbw + pnumsga +ppbmi + ppwt + smoken + wtgain, data = .) %>% 
   broom::tidy() %>% 
@@ -195,10 +189,14 @@ birthweight %>%
 
 Describe your modeling process and show a plot of model residuals against fitted values – use add_predictions and add_residuals in making this plot.
 
+*I used backward selection to choose my model. I began with all variables included in the model. I then started to eliminate, one-by-one, variables that produced a p-value of >0.05. The final model that I choose is: birthweight = b0 + b1(babysex) + b2(bhead) + b3(blength) + b4(delwt) + b5(gaweeks) + b6(mrace) + b7(parity) + b8(pnumlbw) + b9(pnumsga) + b10(ppbmi) + b11(smoken). In this model, each parameter estimate produced a p-value of <0.05 which means that each estimate is statistically significant at the 5% level of significance.*
+
 ```{r}
+#My model is called birthweight_model
 birthweight_model = birthweight %>% 
   lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace +parity + pnumlbw + pnumsga +ppbmi + smoken, data = .)
 
+#Producing plot of residuals against fitted values
 birthweight %>% 
   modelr::add_predictions(birthweight_model)%>%
   modelr::add_residuals(birthweight_model) %>% 
@@ -210,24 +208,13 @@ birthweight %>%
   )
 ```
 
-Compare your model to two others:
+*The plot of residuals against fitted values shows that the residuals are centered around the 0 value. Though there are a few outliers, visually inspecting the plot, we can see that approximately half the data points fall above and half fall below 0. This is expected because we want the errors to be randomly scattered around 0. Therefore, my model is sufficient.* 
 
-One using length at birth and gestational age as predictors (main effects only)
 
-```{r}
-alt_model1 = lm(bwt ~ gaweeks + blength, data = birthweight)
-```
-
-One using head circumference, length, sex, and all interactions (including the three-way interaction) between these
+Compare your model to two others: 1) One using length at birth and gestational age as predictors (main effects only). 2) One using head circumference, length, sex, and all interactions (including the three-way interaction) between these.Make this comparison in terms of the cross-validated prediction error; use crossv_mc and functions in purrr as appropriate.
 
 ```{r}
-alt_model2 = lm(bwt ~ bhead * blength * babysex, data = birthweight)
-```
-
-
-Make this comparison in terms of the cross-validated prediction error; use crossv_mc and functions in purrr as appropriate.
-
-```{r}
+#Preparing a training dataset.
 library(modelr)
 set.seed(1)
 cross_valid = crossv_mc(birthweight, 100, test = 0.2) %>% 
@@ -236,7 +223,8 @@ cross_valid = crossv_mc(birthweight, 100, test = 0.2) %>%
 ```
 
 
-```{r}
+```{r warning = FALSE}
+#Cross-Validation: model1 is my model, model2 is the first specified model in the prompt and model3 is the second specified model in the prompt.
 cross_result = cross_valid %>%  #model 1 is my model
   mutate(model1 = map(train, 
                         ~lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace +parity + pnumlbw + pnumsga + ppbmi + smoken, data = .x)),
