@@ -182,3 +182,15 @@ birthweight %>%
   knitr::kable(digits = 3)
 ```
 
+Describe your modeling process and show a plot of model residuals against fitted values – use add_predictions and add_residuals in making this plot.
+
+```{r}
+birthweight_model = birthweight %>% 
+  lm(bwt ~ babysex + bhead + blength + delwt + gaweeks + mrace +parity + pnumlbw + pnumsga +ppbmi + smoken, data = .)
+
+birthweight %>% 
+  modelr::add_predictions(birthweight_model)%>%
+  modelr::add_residuals(birthweight_model) %>% 
+  ggplot(aes(x=pred, y = resid)) + geom_point()
+```
+
