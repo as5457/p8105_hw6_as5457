@@ -102,7 +102,26 @@ sapply(birthweight, class)
 Need to convert babysex, malform, frace, mrace from numeric to factor
 
 ```{r}
-birthweight %>% 
-  mutate(babysex = as.factor(babysex), frace = as.factor(frace), mrace = as.factor(mrace))
+birthweight = birthweight %>% 
+  mutate(babysex = as.factor(babysex), 
+         malform = as.factor (malform),
+         frace = as.factor(frace), 
+         mrace = as.factor(mrace))
+```
+
+Looking for missing values 
+
+```{r}
+sapply(birthweight, function(x) sum(is.na(x)))
+```
+
+No missing values in the dataset. 
+
+Propose a regression model for birthweight. This model may be based on a hypothesized structure for the factors that underly birthweight, on a data-driven model-building process, or a combination of the two. Describe your modeling process and show a plot of model residuals against fitted values – use add_predictions and add_residuals in making this plot.
+
+
+Exploring the relationship between birthweight and mother's weight at delivery.
+```{r}
+ggplot(birthweight, aes(babysex, delwt)) + geom_boxplot()
 ```
 
