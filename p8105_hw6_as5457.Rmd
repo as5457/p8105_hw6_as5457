@@ -95,3 +95,14 @@ birthweight = read_csv("./birthweight.csv") %>%
   janitor::clean_names()
 ```
 
+```{r}
+sapply(birthweight, class)
+```
+
+Need to convert babysex, malform, frace, mrace from numeric to factor
+
+```{r}
+birthweight %>% 
+  mutate(babysex = as.factor(babysex), frace = as.factor(frace), mrace = as.factor(mrace))
+```
+
