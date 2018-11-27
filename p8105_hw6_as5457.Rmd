@@ -69,7 +69,11 @@ all_cities
 ```
 
 
+Create a plot that shows the estimated ORs and CIs for each city. Organize cities according to estimated OR, and comment on the plot.
 
-
+```{r}
+all_cities %>% 
+  ggplot(aes(x = city_state, y = OR)) + geom_point()
+```
 
 
